@@ -8,6 +8,7 @@ use std::io;
 
 #[tokio::main]
 async fn main() -> AppResult<()> {
+    env_logger::init();
     // Create an application.
     let mut app = App::new();
 
@@ -17,6 +18,9 @@ async fn main() -> AppResult<()> {
     let events = EventHandler::new(250);
     let mut tui = Tui::new(terminal, events);
     tui.init()?;
+
+    // Init logic
+    app.at_sign_files.get_at_sign_files().await?;
 
     // Start the main loop.
     while app.running {
