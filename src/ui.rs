@@ -2,6 +2,7 @@ use ratatui::{
     prelude::*,
     widgets::{Block, Borders, List, Paragraph},
 };
+use tui_logger::{TuiLoggerLevelOutput, TuiLoggerWidget};
 
 use crate::app::{App, Sections};
 
@@ -59,16 +60,33 @@ pub fn render(app: &mut App, frame: &mut Frame) {
     );
 
     // Logs
-    frame.render_widget(
-        Paragraph::new("Bottom").block(
-            Block::new()
-                .borders(Borders::ALL)
-                .border_style(match app.selected_section {
-                    Sections::Logs => Style::default().fg(PRIMARY_COLOR),
-                    _ => Style::default().fg(UNSELECTED_COLOR),
-                })
-                .title_top("Logs"),
-        ),
-        content_layout[1],
-    );
+
+    frame.render_widget(LogWidget { app }, content_layout[1]);
+}
+
+struct LogWidget<'a> {
+    app: &'a mut App,
+}
+
+impl<'a> Widget for LogWidget<'a> {
+    fn render(self, area: Rect, buf: &mut Buffer) {
+        TuiLoggerWidget::default()
+            .block(
+                Block::new()
+                    .borders(Borders::ALL)
+                    .border_style(match self.app.selected_section {
+                        Sections::Logs => Style::default().fg(PRIMARY_COLOR),
+                        _ => Style::default().fg(UNSELECTED_COLOR),
+                    })
+                    .title_top("Log"),
+            )
+            .output_separator('|')
+            .output_timestamp(Some("%F %H:%M:%S%.3f".to_string()))
+            .output_level(Some(TuiLoggerLevelOutput::Long))
+            .output_target(false)
+            .output_file(false)
+            .output_line(false)
+            .style(Style::default())
+            .render(area, buf);
+    }
 }

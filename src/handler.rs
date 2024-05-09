@@ -1,5 +1,6 @@
 use crate::app::{App, AppResult, Sections};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use log::{info, log};
 
 /// Handles the key events and updates the state of [`App`].
 pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
@@ -49,9 +50,11 @@ fn handle_files_section(key_event: KeyEvent, app: &mut App) {
                 app.next_section();
             }
             KeyCode::Up => {
+                info!("Selecting previous file.");
                 app.at_sign_files.select_previous();
             }
             KeyCode::Down => {
+                info!("Selecting next file.");
                 app.at_sign_files.select_next();
             }
             // Other handlers you could add here.

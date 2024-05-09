@@ -8,7 +8,9 @@ use std::io;
 
 #[tokio::main]
 async fn main() -> AppResult<()> {
-    env_logger::init();
+    tui_logger::init_logger(log::LevelFilter::Trace).unwrap();
+    tui_logger::set_default_level(log::LevelFilter::Trace);
+
     // Create an application.
     let mut app = App::new();
 
