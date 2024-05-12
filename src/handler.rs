@@ -1,6 +1,7 @@
 use crate::app::{App, AppResult, Sections};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use log::{info, log};
+use tui_logger::TuiWidgetEvent;
 
 /// Handles the key events and updates the state of [`App`].
 pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
@@ -25,16 +26,13 @@ fn handle_logs_section(key_event: KeyEvent, app: &mut App) {
     if should_quit(&key_event) {
         app.quit();
     } else {
+        let state = &mut app.log_state;
         match key_event.code {
             KeyCode::Tab => {
                 app.next_section();
             }
-            KeyCode::Up => {
-                app.at_sign_files.select_previous();
-            }
-            KeyCode::Down => {
-                app.at_sign_files.select_next();
-            }
+            KeyCode::PageUp => state.transition(TuiWidgetEvent::PrevPageKey),
+            KeyCode::PageDown => state.transition(TuiWidgetEvent::NextPageKey),
             // Other handlers you could add here.
             _ => {}
         }

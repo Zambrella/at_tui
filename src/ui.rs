@@ -2,7 +2,7 @@ use ratatui::{
     prelude::*,
     widgets::{Block, Borders, List, Paragraph},
 };
-use tui_logger::{TuiLoggerLevelOutput, TuiLoggerWidget};
+use tui_logger::{TuiLoggerLevelOutput, TuiLoggerSmartWidget, TuiLoggerWidget};
 
 use crate::app::{App, Sections};
 
@@ -60,7 +60,6 @@ pub fn render(app: &mut App, frame: &mut Frame) {
     );
 
     // Logs
-
     frame.render_widget(LogWidget { app }, content_layout[1]);
 }
 
@@ -83,10 +82,8 @@ impl<'a> Widget for LogWidget<'a> {
             .output_separator('|')
             .output_timestamp(Some("%F %H:%M:%S%.3f".to_string()))
             .output_level(Some(TuiLoggerLevelOutput::Long))
-            .output_target(false)
-            .output_file(false)
-            .output_line(false)
             .style(Style::default())
+            .state(&self.app.log_state)
             .render(area, buf);
     }
 }

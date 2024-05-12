@@ -2,6 +2,8 @@ use std::env;
 use std::path::PathBuf;
 use std::{error, path::Path};
 
+use tui_logger::TuiWidgetState;
+
 /// Application result type.
 pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 
@@ -12,7 +14,6 @@ pub enum Sections {
 }
 
 /// Application.
-#[derive(Debug)]
 pub struct App {
     /// Is the application running?
     pub running: bool,
@@ -22,6 +23,8 @@ pub struct App {
     pub selected_section: Sections,
     /// Whether to show logs.
     pub show_logs: bool,
+    /// State of log widget.
+    pub log_state: TuiWidgetState,
 }
 
 impl Default for App {
@@ -31,6 +34,7 @@ impl Default for App {
             at_sign_files: FileSelector::default(),
             selected_section: Sections::Files,
             show_logs: true,
+            log_state: TuiWidgetState::new(),
         }
     }
 }
